@@ -187,10 +187,42 @@ const downloadH2 = type => {
 // 监听路由变化
 watch(
   () => ({ path: routeWatch.path, params: routeWatch.params }),
-  () => {
-    location.reload() // 重新加载浏览器页面
+  (cur, prev) => {
+    if (cur.path !== prev.path) {
+      location.reload() // 重新加载浏览器页面
+    }
   },
   { deep: true }
+)
+
+watch(
+  () => routeWatch.query,
+  val => {
+    const attachParams = val.attachParams as string
+    if (attachParams) {
+      try {
+        const params = JSON.parse(Base64.decode(decodeURIComponent(attachParams)))
+        console.log('Parsed external params:', params)
+        dvMainStore.addOuterParamsFilter(params, state.canvasDataPreview, 'outer')
+        const ids = []
+        const push = c => {
+          if (c?.component === 'UserView') {
+            ids.push(c.id)
+          } else if (c?.component === 'Group') {
+            c.propValue?.forEach(push)
+          } else if (c?.component === 'DeTabs') {
+            c.propValue?.forEach(tab => tab.componentData?.forEach(push))
+          }
+        }
+        Array.isArray(state.canvasDataPreview) && state.canvasDataPreview.forEach(push)
+        const { emitter } = useEmitt()
+        ids.forEach(id => emitter.emit('query-data-' + id))
+      } catch (e) {
+        console.error('attachParams parse error', e)
+      }
+    }
+  },
+  { deep: true, immediate: true }
 )
 
 let p = null

@@ -50,18 +50,18 @@ export default {
       compositionOnly: true,
       include: [resolve(__dirname, 'src/locales/**')]
     }),
-    eslintPlugin({
-      cache: false,
-      include: [
-        'src/**/*.ts',
-        'src/**/*.tsx',
-        'src/**/*.js',
-        'src/**/*.vue',
-        'src/*.ts',
-        'src/*.js',
-        'src/*.vue'
-      ]
-    }),
+    // eslintPlugin({
+    //   cache: false,
+    //   include: [
+    //     'src/**/*.ts',
+    //     'src/**/*.tsx',
+    //     'src/**/*.js',
+    //     'src/**/*.vue',
+    //     'src/*.ts',
+    //     'src/*.js',
+    //     'src/*.vue'
+    //   ]
+    // }),
     viteStylelint()
   ],
   css: {
